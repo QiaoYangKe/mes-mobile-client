@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter/services.dart';
 //左侧菜单栏
 class LeftMenu extends Drawer {
   @override
@@ -25,8 +25,7 @@ class LeftMenu extends Drawer {
                           new EdgeInsets.only(right: 10.0, bottom: 15.0),
                           decoration: BoxDecoration(
                             image: DecorationImage(
-                              image: new NetworkImage(
-                                  'http://www.chedan5.com/upload/article/201803/06/1740235a9e62077e0aexbcUQh.jpg'),
+                              image: AssetImage("images/backgroundLogin.jpg"),
                               //从Assets加载图片
                               fit: BoxFit.cover,
                             ),
@@ -67,6 +66,13 @@ class LeftMenu extends Drawer {
                 Scaffold.of(context).showSnackBar(new SnackBar(
                   content: new Text("主数据"),
                 ));
+              }),
+          new ListTile(
+            //第二个功能项
+              title: new Text('退出系统'),
+              leading: new Icon(Icons.accessibility),
+              onTap: () {
+               SystemNavigator.pop();
               }),
           //分割线控件
         ],
