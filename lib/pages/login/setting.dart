@@ -3,6 +3,7 @@ import 'package:mes_mobile_client/pages/login/login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 var ipController = new TextEditingController();
 var ip = ipController.text;
+var newIp = '';
 class Setting extends StatelessWidget {
   // This widget is the root of your application.
   @override
@@ -30,24 +31,17 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    _loadIp();
+    get();
   }
 
-  //Loading counter value on start
-  _loadIp() async {
+  save() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      ip = (prefs.getString('ip') ?? '');
-    });
+    prefs.setString('ip', ip);
   }
 
-  //Incrementing counter after click
-  _incrementIp() async {
+  Future<String> get() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      ip = prefs.getString('counter') ?? '';
-      prefs.setString('ip', ip);
-    });
+    newIp = await prefs.getString('ip');
   }
 
   @override
@@ -86,7 +80,8 @@ class _MyHomePageState extends State<MyHomePage> {
                           decoration: new InputDecoration(
                             //                hintText: "请输入用户名",
                             labelText: "ip服务器",
-                            helperText: ip,
+                             hintText: newIp,
+                            helperText: "点击输入栏获取原ip配置"
                           ),
                           onChanged: (text) {
                             //内容改变的回调
@@ -132,7 +127,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 disabledColor: Colors.blue,
                                 disabledTextColor: Colors.black,
                                 onPressed: () {
-                                  this._loadIp();
+                                  this.save();
                                 },
                                 child: new Padding(
                                   padding: new EdgeInsets.all(5.0),
