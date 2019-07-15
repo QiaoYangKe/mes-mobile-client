@@ -1,12 +1,12 @@
 /**
- * APP的主入口文件
+ * APP的带有tab的主页面
  */
 
 import 'package:flutter/material.dart';
 
 import 'package:mes_mobile_client/pages/main/tab1.dart';
 import 'package:mes_mobile_client/pages/main/tab2.dart';
-import 'package:mes_mobile_client/pages/main/tab3.dart';
+import 'package:mes_mobile_client/pages/main/finishedProducts.dart';
 
 void main() {
   runApp(new AppHome());
@@ -37,6 +37,7 @@ class MyAppState extends State<AppHome> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+
     return new MaterialApp(
       home: new Scaffold(
         body: new TabBarView(
@@ -44,7 +45,7 @@ class MyAppState extends State<AppHome> with SingleTickerProviderStateMixin {
           children: <Widget>[
             new TabOne(),
             new TabTwo(),
-            new TabThree(),
+            new FinishProducts(),
           ],
         ),
         bottomNavigationBar: new Material(

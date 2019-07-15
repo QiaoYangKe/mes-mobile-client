@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mes_mobile_client/pages/main/BatteryPage.dart';
 //左侧菜单栏
 class LeftMenu extends Drawer {
   @override
@@ -9,9 +10,9 @@ class LeftMenu extends Drawer {
       child: new ListView(
         children: <Widget>[
           new Container(
-              color: Color.fromARGB(255, 119, 136, 213),
+              color: Color.fromRGBO(35, 127, 127, 0.7),
               child: new Padding(
-                padding: new EdgeInsets.all(20.0),
+                padding: new EdgeInsets.all(5.0),
                 child: new Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -22,7 +23,7 @@ class LeftMenu extends Drawer {
                           width: 80.0,
                           height: 80.0,
                           margin:
-                          new EdgeInsets.only(right: 10.0, bottom: 15.0),
+                          new EdgeInsets.only(right: 50.0, bottom: 15.0),
                           decoration: BoxDecoration(
                             image: DecorationImage(
                               image: AssetImage("images/backgroundLogin.jpg"),
@@ -59,13 +60,14 @@ class LeftMenu extends Drawer {
               )),
           new ListTile(
             //第二个功能项
-              title: new Text('主数据'),
+              title: new Text('电量'),
               leading: new Icon(Icons.accessibility),
               onTap: () {
-                Navigator.of(context).pop();
-                Scaffold.of(context).showSnackBar(new SnackBar(
-                  content: new Text("主数据"),
-                ));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                        new BatteryPage()));
               }),
           new ListTile(
             //第二个功能项

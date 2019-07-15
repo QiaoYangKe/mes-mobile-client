@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:mes_mobile_client/pages/appHome.dart';
+import 'package:mes_mobile_client/pages/main/finishedProducts.dart';
 import 'package:mes_mobile_client/pages/login/setting.dart';
 import 'package:flutter/services.dart';
 
@@ -12,6 +12,7 @@ class Login extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setEnabledSystemUIOverlays([]);
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -70,7 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           //是否自动更正
                           autocorrect: true,
                           //是否自动对焦
-                          //              autofocus: true,
+                          autofocus: true,
                           decoration: new InputDecoration(
                             //                hintText: "请输入用户名",
                             labelText: "请输入用户名",
@@ -117,74 +118,77 @@ class _MyHomePageState extends State<MyHomePage> {
                             print('submit $text');
                           },
                         ),
-                      ), new Container(
-                            height: 30,
-                            width:300,
-                            color: Color.fromRGBO(35, 127, 127, 0.7),
-                            margin: EdgeInsets.fromLTRB(0,10,0,10),
-                            child: FlatButton(
-                                disabledColor: Colors.grey,
-                                disabledTextColor: Colors.black,
-                                onPressed: () {
-                                  if (usernameController.text.isEmpty) {
-                                    //第三方的插件Toast，https://pub.dartlang.org/packages/fluttertoast
-                                    Fluttertoast.showToast(
-                                        msg: "用户名不能为空哦",
-                                        toastLength: Toast.LENGTH_SHORT,
-                                        gravity: ToastGravity.BOTTOM,
-                                        timeInSecForIos: 1,
-                                        backgroundColor: Colors.white,
-                                        textColor: Colors.black);
-                                  } else if (userPwdController.text.isEmpty) {
-                                    Fluttertoast.showToast(
-                                        msg: "密码不能为空哦",
-                                        toastLength: Toast.LENGTH_SHORT,
-                                        gravity: ToastGravity.BOTTOM,
-                                        timeInSecForIos: 1,
-                                        backgroundColor: Colors.white,
-                                        textColor: Colors.black);
-                                  } else {
-                                    //弹出对话框，里面写着账号和密码
-                                    showDialog(
-                                        context: context,
-                                        builder: (_) {
-                                          return AlertDialog(
-                                            title: Text("对话框"),
-                                            content: Text(
-                                                usernameController.text +
-                                                    "\n" +
-                                                    userPwdController.text),
-                                            actions: <Widget>[
-                                              //对话框里面的两个按钮
-                                              FlatButton(
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                  child: Text("取消")),
-                                              FlatButton(
-                                                //点击确定跳转到下一个界面，也就是HomePage
-                                                  onPressed: () {
-                                                    Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder: (context) =>
-                                                            new AppHome()));
-                                                  },
-                                                  child: Text("确定")),
-                                            ],
-                                          );
-                                        });
-                                  }
-                                },
-                                child: new Padding(
-                                  padding: new EdgeInsets.all(5.0),
-                                  child: new Text(
-                                    '登录',
-                                    style: new TextStyle(
-                                        color: Colors.white, fontSize: 13.0),
-                                  ),
-                                )),
-                        ),
+                      ),
+                          new Row(children: <Widget>[
+                            new Expanded(child: new Container(
+                              height: 30,
+                              width:300,
+                              color: Color.fromRGBO(35, 127, 127, 0.7),
+                              margin: EdgeInsets.fromLTRB(10,10,10,10),
+                              child: FlatButton(
+                                  disabledColor: Colors.grey,
+                                  disabledTextColor: Colors.black,
+                                  onPressed: () {
+                                    if (usernameController.text.isEmpty) {
+                                      //第三方的插件Toast，https://pub.dartlang.org/packages/fluttertoast
+                                      Fluttertoast.showToast(
+                                          msg: "用户名不能为空哦",
+                                          toastLength: Toast.LENGTH_SHORT,
+                                          gravity: ToastGravity.BOTTOM,
+                                          timeInSecForIos: 1,
+                                          backgroundColor: Colors.white,
+                                          textColor: Colors.black);
+                                    } else if (userPwdController.text.isEmpty) {
+                                      Fluttertoast.showToast(
+                                          msg: "密码不能为空哦",
+                                          toastLength: Toast.LENGTH_SHORT,
+                                          gravity: ToastGravity.BOTTOM,
+                                          timeInSecForIos: 1,
+                                          backgroundColor: Colors.white,
+                                          textColor: Colors.black);
+                                    } else {
+                                      //弹出对话框，里面写着账号和密码
+                                      showDialog(
+                                          context: context,
+                                          builder: (_) {
+                                            return AlertDialog(
+                                              title: Text("对话框"),
+                                              content: Text(
+                                                  usernameController.text +
+                                                      "\n" +
+                                                      userPwdController.text),
+                                              actions: <Widget>[
+                                                //对话框里面的两个按钮
+                                                FlatButton(
+                                                    onPressed: () {
+                                                      Navigator.of(context).pop();
+                                                    },
+                                                    child: Text("取消")),
+                                                FlatButton(
+                                                  //点击确定跳转到下一个界面，也就是HomePage
+                                                    onPressed: () {
+                                                      Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (context) =>
+                                                              new FinishProducts()));
+                                                    },
+                                                    child: Text("确定")),
+                                              ],
+                                            );
+                                          });
+                                    }
+                                  },
+                                  child: new Padding(
+                                    padding: new EdgeInsets.all(5.0),
+                                    child: new Text(
+                                      '登录',
+                                      style: new TextStyle(
+                                          color: Colors.white, fontSize: 13.0),
+                                    ),
+                                  )),
+                            )),
+                          ]),
                         new Row(
                           mainAxisAlignment:MainAxisAlignment.spaceBetween,
                           children: <Widget>[new Container(

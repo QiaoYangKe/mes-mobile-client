@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mes_mobile_client/pages/login/login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 var ipController = new TextEditingController();
@@ -8,6 +9,7 @@ class Setting extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setEnabledSystemUIOverlays([]);
     return MaterialApp(
       title: 'IP设置',
       theme: ThemeData(

@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:mes_mobile_client/pages/main/leftmenu.dart';
-import 'package:mes_mobile_client/pages/common/eventBus.dart';
 
-class TabThree extends StatefulWidget {
+class FinishProducts extends StatefulWidget {
   @override
   TabThreeState createState() => new TabThreeState();
 }
-class TabThreeState extends State<TabThree>{
+class TabThreeState extends State<FinishProducts>{
   MediaQueryData queryData;
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setEnabledSystemUIOverlays([]);
     // TODO: implement build
     return new MaterialApp(
       home: new Scaffold(
