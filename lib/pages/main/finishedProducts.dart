@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:mes_mobile_client/pages/main/leftmenu.dart';
+import 'package:mes_mobile_client/pages/main/tab1.dart';
 
 class FinishProducts extends StatefulWidget {
   @override
@@ -37,6 +38,11 @@ class TabThreeState extends State<FinishProducts>{
                         disabledColor: Colors.blue,
                         disabledTextColor: Colors.black,
                         onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                  new TabOne()));
                         },
                         child: new Padding(
                           padding: new EdgeInsets.all(5.0),

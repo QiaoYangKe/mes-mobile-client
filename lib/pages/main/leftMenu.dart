@@ -71,6 +71,17 @@ class LeftMenu extends Drawer {
               }),
           new ListTile(
             //第二个功能项
+              title: new Text('扫码'),
+              leading: new Icon(Icons.accessibility),
+              onTap: () {
+//                Navigator.push(
+//                    context,
+//                    MaterialPageRoute(
+//                        builder: (context) =>
+//                        new Code()));
+              }),
+          new ListTile(
+            //第二个功能项
               title: new Text('退出系统'),
               leading: new Icon(Icons.accessibility),
               onTap: () {

@@ -33,6 +33,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  var flagName = false;
+  void _flagName() {
+    setState(() {
+      flagName = !flagName;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,64 +66,102 @@ class _MyHomePageState extends State<MyHomePage> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         verticalDirection: VerticalDirection.down,
                         children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.all(10.0),
-                        //用户名输入框
-                        child: TextField(
-                          //控制器
-                          controller: usernameController,
-                          maxLength: 11,
-                          maxLines: 1,
-                          //是否自动更正
-                          autocorrect: true,
-                          //是否自动对焦
-                          autofocus: true,
-                          decoration: new InputDecoration(
-                            //                hintText: "请输入用户名",
-                            labelText: "请输入用户名",
-                            helperText: "用户名",
-                            icon: new Icon(Icons.account_box),
+                          Row(
+                            children: <Widget>[
+                              new Expanded(
+                                  child: Padding(
+                                    padding: EdgeInsets.all(0),
+                                //用户名输入框
+                                child: TextField(
+                                  //控制器
+                                  controller: usernameController,
+                                  maxLength: 11,
+                                  needShow: flagName,
+                                  maxLines: 1,
+                                  //是否自动更正
+                                  autocorrect: false,
+                                  //是否自动对焦
+//                          autofocus: false,
+                                  decoration: new InputDecoration(
+                                    //                hintText: "请输入用户名",
+                                    labelText: "请输入用户名",
+                                    helperText: "用户名",
+                                    icon: new Icon(Icons.account_box),
+                                  ),
+                                  onChanged: (text) {
+                                    //内容改变的回调
+                                    print('change $text');
+                                  },
+                                  onSubmitted: (text) {
+                                    //内容提交(按回车)的回调
+                                    print('submit $text');
+                                  },
+                                ),
+                              ),
+                              flex: 9,),
+                              new Expanded(
+                                child: Padding(
+                                  padding: EdgeInsets.all(0),
+                                  child: IconButton(icon: Icon(Icons.keyboard ),
+                                      color: flagName ? Colors.blue: Colors.grey,
+                                      tooltip: '软键盘',
+                                      onPressed:() {
+                                        _flagName();
+                                      }),
+                                ),
+                                flex: 1,
+                              )
+                            ]
                           ),
-                          onChanged: (text) {
-                            //内容改变的回调
-                            print('change $text');
-                          },
-                          onSubmitted: (text) {
-                            //内容提交(按回车)的回调
-                            print('submit $text');
-                          },
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(10.0),
-                        child: TextField(
-                          //控制器
-                          controller: userPwdController,
-                          maxLength: 11,
-                          maxLines: 1,
-                          //是否是密码
-                          obscureText: true,
-//输入类型(这个属性不一定非要这样，这里写出来只是说有这个东西)
-                          keyboardType: TextInputType.number,
-                          //是否自动更正
-                          autocorrect: true,
-                          //是否自动对焦
-                          //              autofocus: true,
-                          decoration: new InputDecoration(
-                            //                hintText: "请输入用户名",
-                            labelText: "请输入密码",
-                            helperText: "密码",
-                            icon: new Icon(Icons.account_box),
+                      Row(
+                        children: <Widget>[
+                         new Expanded(
+                           child: Padding(
+                             padding: EdgeInsets.all(0),
+                             child: TextField(
+                                //控制器
+                                controller: userPwdController,
+                                needShow: flagName,
+                                maxLength: 11,
+                                maxLines: 1,
+                                //是否是密码
+                                obscureText: true,
+                               //输入类型(这个属性不一定非要这样，这里写出来只是说有这个东西)
+                                keyboardType: TextInputType.number,
+                                //是否自动更正
+                                autocorrect: true,
+                                //是否自动对焦
+                                //              autofocus: true,
+                                decoration: new InputDecoration(
+                                  //                hintText: "请输入用户名",
+                                  labelText: "请输入密码",
+                                  helperText: "密码",
+                                  icon: new Icon(Icons.account_box),
+                                ),
+                                onChanged: (text) {
+                                  //内容改变的回调
+                                  print('change $text');
+                                },
+                                onSubmitted: (text) {
+                                  //内容提交(按回车)的回调
+                                  print('submit $text');
+                                },
+                              ),
+                            ),
+                            flex: 9,
                           ),
-                          onChanged: (text) {
-                            //内容改变的回调
-                            print('change $text');
-                          },
-                          onSubmitted: (text) {
-                            //内容提交(按回车)的回调
-                            print('submit $text');
-                          },
-                        ),
+                         new  Expanded(
+                           child: Padding(
+                             padding: EdgeInsets.all(0),
+                             child: IconButton(icon: Icon(Icons.keyboard ),
+                                 color: flagName ? Colors.blue: Colors.grey,
+                                 tooltip: '软键盘',
+                                 onPressed:() {
+                                   _flagName();
+                                 }),
+                           ),
+                           flex: 1,)
+                        ],
                       ),
                           new Row(children: <Widget>[
                             new Expanded(child: new Container(
