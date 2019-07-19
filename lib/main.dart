@@ -97,7 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child:Visibility(
           visible:show,
           child: AlertDialog(
-              title: Text('检查更新中'),
+              title: Text('检查要不要更新中'),
               content: SingleChildScrollView(
                 child: ListBody(
                   children: <Widget>[
@@ -144,13 +144,13 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future checkUpdate() async {
-    setState(() => this.progress = 1);
+    setState(() => this.progress = 10);
     //获取当前版本
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     String version = packageInfo.version;
-    setState(() => this.progress = 10);
-    //获取服务器上最新版本
     setState(() => this.progress = 20);
+    //获取服务器上最新版本
+    setState(() => this.progress = 30);
     //判断如果服务器上版本比当前版本新,则返回最新版本信息
     if (version != serviceVersion) {
       setState(() => this.progress = 100);
