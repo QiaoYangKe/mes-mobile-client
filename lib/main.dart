@@ -3,11 +3,14 @@ import 'dart:async';
 import 'package:mes_mobile_client/download_progress_dialog.dart';
 import 'package:mes_mobile_client/pages/login/login.dart';
 import 'package:flutter/material.dart';
-import 'dart:math';
+import 'package:flutter/services.dart';
 import 'dart:collection';
 import 'package:package_info/package_info.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+
+import 'dart:io'; //网络请求
+import 'dart:convert'; //数据解析
 
 void main() => runApp(MyApp());
 
@@ -34,73 +37,137 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  var serviceVersion = '';
+  int progress = 0;
+  Map map = new HashMap();
+  var show = true;
+  var isCheck = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    loadData_sys_get();
+    map['data'] = '1.新增app应用内升级\n2.修复若干个bug';
+    map['ver'] = serviceVersion;
+    map['url'] = 'http://10.1.10.49:8080/update.apk';
+//    check();
+  }
+
+  Widget buildGrid() {
+    Widget content;
+    if (isCheck) {
+      content = new AlertDialog(
+        title: Text('发现新版本'),
+        content: SingleChildScrollView(
+          child: ListBody(
+            children: <Widget>[
+              Text(serviceVersion),
+              Text(''),
+              Text('更新内容'),
+              Text(map['data']),
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          FlatButton(
+            child: Text('取消'),
+            onPressed: () {
+              SystemNavigator.pop();
+            },
+          ),
+          FlatButton(
+              child: Text('确认'),
+              onPressed: () => doUpdate(serviceVersion, map['url'])),
+        ],
+      );
+    } else {
+      content = new Text("login");
+    }
+    return content;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
+        body: new Column(
+      children:<Widget>[
+        new Offstage(
+        offstage: false, //这里控制
+        child:Visibility(
+          visible:show,
+          child: AlertDialog(
+              title: Text('检查更新中'),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    Text(serviceVersion),
+                    Text(''),
+                    Text('检查中 $progress%'),
+                  ]),)),
+        ),
       ),
-      body: Center(
-        child: Text('点击下方按钮检测更新'),
-      ),
-      floatingActionButton: new Builder(builder: (BuildContext context) {
-        return FloatingActionButton(//更新按钮
-          onPressed: () {
-            //检查是否有新版本
-            var update = checkUpdate();
-
-            update.then((value){
-              if(value == null){
-                //显示已是最新
-                final mySnackBar = SnackBar(
-                  content: new Text('已是最新版本'),
-                  backgroundColor: Colors.blue,
-                  duration: Duration(milliseconds: 500),
-                );
-                Scaffold.of(context).showSnackBar(mySnackBar);
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                        new Login()));
-              }else{
-                //显示更新内容
-                showUpdate(value['ver'], value['data'], value['url']);
-              }
-            });
-          },
-          tooltip: '点击检测更新',
-          child: Text(
-            '更新',
-          ),
-        );
-      }),
-    );
+        new Container(child: buildGrid())
+      ]
+    ));
   }
 
-//  ///检查是否有更新
+  //获取服务器上的版本
+  Future<Map> loadData_sys_get() async {
+    print('------loadData_sys_get--------');
+    var httpClient = new HttpClient();
+// uri方法1
+    Uri uri = Uri(
+        scheme: 'http', host: '10.1.10.49', port: 8080, path: '/version.json');
+    var request = await httpClient.getUrl(uri);
+    var headers = Map<String, String>();
+    headers['loginSource'] = 'IOS';
+    headers['useVersion'] = '3.1.0';
+    headers['isEncoded'] = '1';
+    headers['bundleId'] = 'com.nongfadai.iospro';
+    request.headers.add("loginSource", "IOS");
+    request.headers.add("useVersion", "3.1.0");
+    request.headers.add("isEncoded", "1");
+    request.headers.add("bundleId", "com.nongfadai.iospro");
+    var response = await request.close();
+    var responseBody = await response.transform(Utf8Decoder()).join();
+    if (response.statusCode == HttpStatus.ok) {
+      Map data = jsonDecode(responseBody);
+      print(data);
+      this.setState(() {
+        serviceVersion = data['version'];
+      });
+      checkUpdate();
+    } else {
+      return null;
+    }
+  }
 
-  Future<Map> checkUpdate() async{
-
+  Future checkUpdate() async {
+    setState(() => this.progress = 1);
     //获取当前版本
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     String version = packageInfo.version;
-
+    setState(() => this.progress = 10);
     //获取服务器上最新版本
-    Map map = new HashMap();
-    map['data'] = '1.新增app应用内升级\n2.修复若干个bug';
-    map['ver'] = '1.0.3';
-    map['url'] = 'http://10.1.10.49:8080/app.apk';
-
+    setState(() => this.progress = 20);
     //判断如果服务器上版本比当前版本新,则返回最新版本信息
-    if(version.compareTo(map['ver']) != 0){
-      print('当前版本: ' + version + ',最新版本: ' + map['ver']);
-      return map;
-    }else {
+    if (version != serviceVersion) {
+      setState(() => this.progress = 100);
+      Fluttertoast.showToast(msg: "最新版本:" + serviceVersion);
+      this.setState(() {
+        show = false;
+        isCheck = true;
+      });
+    } else {
+      setState(() => this.progress = 100);
       Fluttertoast.showToast(msg: "此时就是当前最新版本");
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+              new Login()));
     }
-    return null;
   }
 
   ///显示更新内容
@@ -127,23 +194,21 @@ class _MyHomePageState extends State<MyHomePage> {
             FlatButton(
               child: Text('取消'),
               onPressed: () {
-                Navigator.of(context).pop();
+                SystemNavigator.pop();
               },
             ),
             FlatButton(
               child: Text('确认'),
-              onPressed: ()=>doUpdate(version,url)
-              ,
+              onPressed: () => doUpdate(version, url),
             ),
           ],
         );
       },
     );
   }
-
   ///执行更新操作
   ///[version] 最新版本号
-  doUpdate(String version,String url) async {
+  doUpdate(String version, String url) async {
     //关闭更新内容提示框
     Navigator.of(context).pop();
 //    //获取权限
@@ -151,20 +216,23 @@ class _MyHomePageState extends State<MyHomePage> {
 //    if(per != null && !per){
 //      return null;
 //    }
-
     //开始更新
     return showDialog(
       context: context,
       barrierDismissible: false, // user must tap button!
-      child: DownloadProgressDialog(version,url),
+      child: DownloadProgressDialog(version, url),
     );
   }
+
 //检查是否有权限
   Future<bool> checkPermission() async {
     if (Theme.of(context).platform == TargetPlatform.android) {
-      PermissionStatus permission = await PermissionHandler().checkPermissionStatus(PermissionGroup.storage);
+      PermissionStatus permission = await PermissionHandler()
+          .checkPermissionStatus(PermissionGroup.storage);
       if (permission != PermissionStatus.granted) {
-        Map<PermissionGroup, PermissionStatus> permissions = await PermissionHandler().requestPermissions([PermissionGroup.storage]);
+        Map<PermissionGroup, PermissionStatus> permissions =
+        await PermissionHandler()
+            .requestPermissions([PermissionGroup.storage]);
         if (permissions[PermissionGroup.storage] == PermissionStatus.granted) {
           Fluttertoast.showToast(msg: "获取权限成功");
           return true;
@@ -178,27 +246,4 @@ class _MyHomePageState extends State<MyHomePage> {
     Fluttertoast.showToast(msg: "获取权限失败");
     return false;
   }
-
-
-//  checkPermission() async {
-//    //请求许可
-//    Map< PermissionGroup, PermissionStatus > permissions =  await  PermissionHandler().requestPermissions([PermissionGroup .storage]);
-//    //检查权限
-//    PermissionStatus status = await PermissionHandler().checkPermissionStatus(PermissionGroup.storage);
-//    //检查服务器状态
-//    ServiceStatus serviceStatus =  await PermissionHandler().checkServiceStatus(PermissionGroup .storage);
-//    Fluttertoast.showToast(msg: serviceStatus.toString());
-//    //打开应用设置
-////    bool isOpened =  await  PermissionHandler().openAppSettings();
-//
-//    //判断如果还没拥有读写权限就申请获取权限
-//    if(status != PermissionStatus.granted){
-//      var map = await PermissionHandler().requestPermissions([PermissionGroup.storage]);
-//      if(map[PermissionGroup.storage] != PermissionStatus.granted){
-//        Fluttertoast.showToast(msg: "获取权限失败");
-//        return false;
-//      }
-//    }
-//  }
-
 }
