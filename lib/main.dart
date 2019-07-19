@@ -162,11 +162,11 @@ class _MyHomePageState extends State<MyHomePage> {
     } else {
       setState(() => this.progress = 100);
       Fluttertoast.showToast(msg: "此时就是当前最新版本");
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) =>
-              new Login()));
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (BuildContext context) => Login()),
+            (Route<dynamic> route) => false,
+      );
     }
   }
 
